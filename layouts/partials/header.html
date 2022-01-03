@@ -52,6 +52,7 @@
                 {{- $label_text -}}
             </a>
             {{- end }}
+	    {{- partial "search-form.html" -}}
             <span class="logo-switches">
                 {{- if (not .Site.Params.disableThemeToggle) }}
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
