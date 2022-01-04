@@ -27,7 +27,8 @@
 {{- $pages := union .RegularPages .Sections }}
 
 {{- if .IsHome }}
-{{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections }}
+<h1>Yo Yo Ma</h1>
+{{- $pages = .Sections }}
 {{- end }}
 
 {{- $paginator := .Paginate $pages }}
