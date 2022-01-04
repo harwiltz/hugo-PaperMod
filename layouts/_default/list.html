@@ -27,8 +27,10 @@
 {{- $pages := union .RegularPages .Sections }}
 
 {{- if .IsHome }}
-<h1>Yo Yo Ma</h1>
-{{- $pages = .Sections }}
+{{- partial "graph.html" }}
+{{- partial "search-form.html" }}
+{{- $pages = slice }}
+<ul id="results"></ul>
 {{- end }}
 
 {{- $paginator := .Paginate $pages }}

@@ -1,0 +1,172 @@
+<div id="network-graph">
+  <svg id="network-graph-svg">
+  <defs id="my-defs">
+    <filter x="0" y="0" width="1" height="1" id="solid">
+      <feFlood flood-color="#f7f7f7" flood-opacity="0.9"/>
+      <feComposite in="SourceGraphic" operator="xor" />
+    </filter>
+  </defs>
+  </svg>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.min.js" integrity="sha512-wkduu4oQG74ySorPiSRStC0Zl8rQfjr/Ty6dMvYTmjZw6RS5bferdx8TR7ynxeh79ySEp/benIFFisKofMjPbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  d3.json("/assets/graph.json").then(function(data) {
+      const WIDTH = 800;
+      const HEIGHT = 600;
+      
+      const width = String(WIDTH);
+      const height = String(HEIGHT);
+
+      const minRadius = 10;
+      const radiusSlope = 20;
+      const radiusDecay = 4/5;
+
+      const idleLinkOpacity = "0.5";
+      const activeLinkOpacity = "1.0";
+      const inactiveLinkOpacity = "0.2";
+
+      const nodeActiveScale = 1.4;
+
+      radius = d => {
+	  if(!d.radius) {
+	      d.radius = minRadius + radiusSlope * Math.pow(d.centrality, radiusDecay);
+	  }
+	  return d.radius;
+      };
+
+      numColors = Math.max(...data.nodes.map(d => d.communityLabel)) + 1;
+      commAngles = [...Array(numColors).keys()].map(x => 2 * Math.PI * x / numColors);
+      commXs = commAngles.map(Math.cos)
+      commYs = commAngles.map(Math.sin)
+
+      colorMin = 120;
+      colorScale = 255 - colorMin;
+
+      commColors = commAngles.map(x => {
+	  r = Math.floor(colorMin + Math.cos(x) * colorScale);
+	  g = Math.floor(colorMin + Math.sin(x) * colorScale);
+	  b = Math.floor(colorMin + Math.random() * colorScale);
+	  return "rgb(" + r + ", " + g + ", " + b + ")";
+      });
+
+      nodeColor = d => {
+	  return commColors[d.communityLabel];
+      };
+
+      handleMouseOver = (d, i) => {
+	  n = d3.select(d.currentTarget);
+	  n.attr("r", n.attr("r") * nodeActiveScale);
+
+	  d3.selectAll("text")
+	      .filter("#" + CSS.escape(d.currentTarget.id))
+	      .style("display", "block");
+
+	  d3.selectAll("line").attr("stroke-opacity", inactiveLinkOpacity);
+
+	  d3.selectAll("line")
+	      .filter((l, _) => l !== undefined)
+	      .filter((l, _) =>
+		  l.source.index == i.index ||
+		      l.target.index == i.index)
+	      .attr("stroke-opacity", activeLinkOpacity);
+      };
+
+      handleMouseOut = (d, _) => {
+	  n = d3.select(d.currentTarget);
+	  n.attr("r", n.attr("r") / nodeActiveScale);
+
+	  d3.selectAll("text")
+	      .filter('#' + CSS.escape(d.currentTarget.id))
+	      .style("display", "none");
+
+	  d3.selectAll("line").attr("stroke-opacity", idleLinkOpacity);
+      };
+
+      const links = data.links.map(d => Object.create(d));
+      const nodes = data.nodes.map(d => Object.create(d));
+
+      var svg = d3.select("#network-graph-svg")
+	  .attr("max-width", "80%")
+	  .attr("class", "graphsvg")
+	  .attr("overflow", "visible")
+	  .attr("viewBox", [0, 0, width, height]);
+
+      var simulation = d3.forceSimulation(nodes)
+	  .force("link", d3.forceLink(links).id(d => d.id).strength(0.1))
+	  .force("charge", d3.forceManyBody().strength(-250))
+	  .force("collision", d3.forceCollide().radius(d => radius(d) * 1.2).strength(1.5))
+	  .force("x", d3.forceX().x(function(d) {
+	      return width / 2 + (width / 4) * commXs[d.communityLabel];
+	  }).strength(0.25))
+	  .force("y", d3.forceY().y(function(d) {
+	      return height / 2 + (height / 8) * commYs[d.communityLabel];
+	  }).strength(0.25));
+
+      const link = svg.append("g")
+	    .attr("stroke", "#000")
+	    // .attr("stroke-opacity", 0.6)
+	    .selectAll("line")
+	    .data(links)
+	    .join("line")
+	    .attr("stroke-width", 1);
+
+      const node = svg.append("g")
+	  .selectAll("circle")
+	  .data(nodes)
+	  .join("a")
+	  .attr("xlink:href", d => "/zettels/" + d.lnk)
+	  .attr("id", d => "circle_" + d.lnk)
+	  .append("circle")
+	  .attr("id", d => d.id.toLowerCase())
+	    .attr("r", radius)
+	  .attr("fill", nodeColor)
+	  .attr("stroke", "#000")
+	  .attr("stroke-width", 1.3)
+	  .on("mouseover", handleMouseOver)
+	    .on("mouseout", handleMouseOut)
+	    .call(() => simulation);
+
+      node.append("title").text(d => d.label.replace(/"/g, ''));
+
+      const label = svg.append("g")
+	    .selectAll("text")
+	    .data(nodes)
+	    .join("g");
+      const label_background = label.append("text")
+	    .style("font-size", "25px")
+	    .text(d => d.label.replace(/"/g, ''))
+	    .attr("dy", -25)
+	    .attr("id", d => d.id.toLowerCase())
+	    .attr("class", "nodeLabel")
+	    .style("display", "none")
+	    .style("pointer-events", "none")
+	    .style("alignment-baseline", "middle")
+	    .style("filter", "url(#solid)");
+      const label_text = label.append("text")
+	    .style("fill", "#222")
+	    .style("font-size", "25px")
+	    .text(d => d.label.replace(/"/g, ''))
+	    .attr("dy", -25)
+	    .attr("id", d => d.id.toLowerCase())
+	    .attr("class", "nodeLabel")
+	    .style("display", "none")
+	    .style("pointer-events", "none")
+	    .style("alignment-baseline", "middle");
+
+      simulation.on("tick", () => {
+	  link.attr("x1", d => d.source.x)
+	      .attr("y1", d => d.source.y)
+	      .attr("x2", d => d.target.x)
+	      .attr("y2", d => d.target.y);
+	  node.attr("cx", d => d.x)
+	      .attr("cy", d => d.y);
+
+	  label_text.attr("x", d => d.x)
+	      .attr("y", d => d.y);
+
+	  label_background.attr("x", d => d.x)
+	      .attr("y", d => d.y);
+      });
+  });
+</script>

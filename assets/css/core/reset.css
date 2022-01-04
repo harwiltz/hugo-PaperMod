@@ -140,3 +140,41 @@ img {
 .MathJax {
     overflow: scroll;
 }
+
+#search {
+    text-align: center;
+    margin: 0 auto;
+}
+
+#search-input {
+    background-color: white;
+    padding: 0.25em;
+    border-radius: 4px;
+    border-bottom: 2px solid black;
+}
+
+#search-submit {
+    background-color: #444;
+    color: white;
+    padding: 0.25em;
+    border-radius: 4px;
+}
+
+#results li {
+    background-color: white;
+    margin: 1em;
+    padding: 1em;
+    border-radius: 4px;
+    list-style: none;
+}
+
+#results p {
+    font-size: 75%;
+    color: #888;
+}
+
+#results a {
+    font-weight: bold;
+    font-size: 125%;
+    color: black;
+}
