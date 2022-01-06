@@ -9,7 +9,6 @@ html {
     overflow-y: scroll;
 }
 
-a,
 button,
 body,
 h1,
@@ -43,6 +42,10 @@ table {
     display: block;
 }
 
+nav a {
+    color: var(--primary);
+}
+
 h1,
 h2,
 h3,
@@ -69,6 +72,10 @@ ul {
 
 a {
     text-decoration: none;
+}
+
+a:hover {
+    color: #99e;
 }
 
 body,
@@ -138,7 +145,7 @@ img {
 }
 
 .MathJax {
-    overflow: scroll;
+    overflow: auto;
 }
 
 #search {
@@ -177,4 +184,14 @@ img {
     font-weight: bold;
     font-size: 125%;
     color: black;
+}
+
+.backlinks a {
+    display: block;
+    color: #99e;
+    padding: 0.5em;
+}
+
+.backlinks a:hover {
+    color: #447;
 }

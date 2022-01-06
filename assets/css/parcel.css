@@ -1,0 +1,55 @@
+.theorem, .definition, .lemma, .corollary {
+  background-color: #eeeeee;
+  padding: 6pt;
+  margin: 8pt;
+}
+
+.theorem:before {
+  content: "Theorem ("attr(id)"): ";
+  font-weight: bold;
+}
+
+.definition:before {
+  content: "Definition ("attr(id)"): ";
+  font-weight: bold;
+}
+
+.lemma:before {
+  content: "Lemma ("attr(id)"): ";
+  font-weight: bold;
+}
+
+.corollary:before {
+  content: "Corollary ("attr(id)"): ";
+  font-weight: bold;
+}
+
+.proof:before {
+  content: "Proof";
+  font-weight: bold;
+  font-style: normal;
+}
+
+.proof {
+  margin: 12pt;
+  padding: 2pt;
+  max-height: 2em;
+  transition: max-height 1s ease-in-out, border-style 1s ease-in-out, border-color 1s ease-in-out;
+  overflow: hidden;
+  background-color: #00f1;
+  border: 2px;
+  border-style: dashed;
+  border-color: #00f3;
+  border-radius: 4px;
+}
+
+.proof:hover {
+  max-height: 128em;
+  border-style: solid;
+  border-color: #00f4;
+}
+
+.proof:after {
+  content: "QED.";
+  font-weight: 800;
+}

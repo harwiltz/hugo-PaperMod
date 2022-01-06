@@ -36,6 +36,20 @@
   {{- end }}
 
   <footer class="post-footer">
+    <div class="backlinks-footer">
+      <h4>Links to this note</h4>
+      <div class="backlinks">
+	{{ $re := .File.BaseFileName }}
+	{{ range .Site.AllPages }}
+	{{ $match := findRE $re .RawContent }}
+	{{ if $match }}
+	{{ $link := strings.TrimRight "single.html" .RelPermalink }}
+	<a href="{{ $link }}">{{ .Title }}</a>
+	{{ end }}
+	{{ end }}
+      </div>
+    </div>
+    
     {{- if .Params.tags }}
     <ul class="post-tags">
       {{- range ($.GetTerms "tags") }}
