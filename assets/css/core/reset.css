@@ -195,3 +195,12 @@ img {
 .backlinks a:hover {
     color: #447;
 }
+
+.output.stream code::before {
+    content: "Out:";
+    display: block;
+}
+
+.output pre {
+  opacity: 0.7;
+}
