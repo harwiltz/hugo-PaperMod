@@ -53,3 +53,21 @@
   content: "QED.";
   font-weight: 800;
 }
+
+.algorithm:before {
+    content: "Algorithm: "attr(id);
+    font-weight: bold;
+}
+
+.algorithm li {
+    list-style-type: none;
+}
+
+.algorithm {
+    padding: 1em;
+    border: 2px solid #444;
+}
+
+.algorithm p {
+    border-top: 2px solid black;
+}
