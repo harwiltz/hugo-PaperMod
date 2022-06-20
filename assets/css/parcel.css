@@ -71,3 +71,7 @@
 .algorithm p {
     border-top: 2px solid black;
 }
+
+.csl-entry {
+    padding-bottom: 1em;
+}
