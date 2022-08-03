@@ -1,11 +1,20 @@
-.theorem, .definition, .lemma, .corollary {
-  background-color: #eeeeee;
+.theorem, .definition, .lemma, .corollary, .proposition {
+  background-color: blanchedalmond;
   padding: 6pt;
   margin: 8pt;
 }
 
+.definition {
+  background-color: #eeeeee;
+}
+
 .theorem:before {
   content: "Theorem ("attr(id)"): ";
+  font-weight: bold;
+}
+
+.proposition:before {
+  content: "Proposition ("attr(id)"): ";
   font-weight: bold;
 }
 
