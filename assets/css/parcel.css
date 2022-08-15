@@ -75,6 +75,7 @@
 .algorithm {
     padding: 1em;
     border: 2px solid #444;
+    overflow: auto;
 }
 
 .algorithm p {
