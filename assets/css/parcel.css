@@ -53,7 +53,7 @@
 }
 
 .proof:hover {
-  max-height: 128em;
+  max-height: 200em;
   border-style: solid;
   border-color: #00f4;
 }
